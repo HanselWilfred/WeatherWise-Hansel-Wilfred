@@ -1,0 +1,68 @@
+Conversation about WeatherWise assignment development
+------------------------------------------------------
+----------------------------------
+Tool: ChatGPT
+Date: 17/09/2025
+----------------------------------
+
+Me: This is an upcoming assignment in python for me before going just explain to me what the assignment is about. I am a beginner, explain to me in simple terms and tell me how to start on this project.
+
+AI: (Explains that the project is about creating a weather app in Python that can: 
+- fetch weather data 
+- show forecasts in text 
+- make visualisations 
+- answer natural language questions 
+- and use menus for interaction. 
+Suggested starting with data retrieval first.)
+
+---
+
+Me: ⚠️ Could not get weather data. Keys in data: dict_keys([])
+
+AI: That error means the fetch-my-weather package is not returning proper JSON, it’s just giving back strings. Let's switch to Open-Meteo API because it’s free, global, and simple to use.
+
+Me: Could not fetch weather: get_weather() got an unexpected keyword argument 'forecast_days'.
+
+AI: Yes, fetch-my-weather doesn’t support that. Open-Meteo allows geocoding (city → latitude/longitude), current weather, and daily forecast. Let's build a function around that instead.
+
+---
+
+Me: Before running this should I install something?
+
+AI: Yes, in Colab run:
+!pip install matplotlib pyinputplus
+This gives you graphing and menu options.
+
+Me: Where should I put the code in step 2?
+
+AI: Under the “Natural Language Processing” section. Replace the `pass` functions with the new ones.
+
+---
+
+Me: ⚠️ Could not fetch weather: 'str' object has no attribute 'current_condition'
+
+AI: That’s because fetch-my-weather failed. Let’s write a new `get_weather_data()` function with Open-Meteo:
+1. Search the city or PIN code with geocoding API.
+2. Get weather forecast for that location.
+3. Return current temp + 5-day forecast neatly in a dictionary.
+
+Me: Can this be simplified?
+
+AI: Yes. Use a list comprehension for the forecast. Now it fetches the city, current temperature, and 5 days in a clean dictionary.
+
+---
+
+Me: I want to see the visuals.
+
+AI: Run:
+create_temperature_visualisation(weather)
+create_precipitation_visualisation(weather)
+
+This shows a line chart (min/max temp) and a bar chart (rain chance).
+
+Me: Now what are the next steps?
+
+AI: Move on to NLP, menu interface, and testing. Then finish with documentation, AI logs, and reflection.
+
+---
+

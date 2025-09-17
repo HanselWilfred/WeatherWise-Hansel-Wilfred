@@ -1,6 +1,11 @@
 Conversation about statrting the WeatherWise assignment
 ------------------------------------------------------
 
+----------------------------------
+Tool: ChatGPT
+Date: 17/09/2025
+----------------------------------
+
 Me: This is an upcoming assignment in python for me before going just explain to me what the assignment is about. I am a beginner, explain to me in simple terms and tell me how to start on this project.
 
 AI: (Explains that the project is about creating a weather app in Python that can: 
@@ -62,4 +67,3 @@ AI: Move on to NLP, menu interface, and testing. Then finish with documentation,
 
 ---
 
-Note: This conversation shows the progression from understanding the assignment, fixing errors with fetch-my-weather, switching to Open-Meteo, setting up packages, writing the first weather data function, and successfully finishing Section 1 (Weather Data + Visualisations).

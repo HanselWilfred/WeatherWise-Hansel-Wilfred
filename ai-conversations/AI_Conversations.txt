@@ -60,9 +60,5 @@ create_precipitation_visualisation(weather)
 
 This shows a line chart (min/max temp) and a bar chart (rain chance).
 
-Me: Now what are the next steps?
-
-AI: Move on to NLP, menu interface, and testing. Then finish with documentation, AI logs, and reflection.
-
 ---
 

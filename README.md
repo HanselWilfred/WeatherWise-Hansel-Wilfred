@@ -66,7 +66,6 @@ Intent-based replies: splitting rain vs temperature vs general makes answers fee
 Minimal UI: single run_app() loop is easier to maintain and grade.
 
 🧪 Quick Sanity Test:
-# Minimal checks (paste in a Python shell with the app loaded)
 res = get_weather_data("6000")
 print(res.get("location"), res.get("current_temp"))
 print(len(res.get("forecast", [])))

@@ -23,7 +23,7 @@
   - 🥶 Cold (<15°C)
 - 🌧️ **Rain alerts** — Only shown if meaningful (≥30%)
 - 📊 **Charts:**  
-  - Temperature band  
+  - Temperature 3D chart  
   - Rain “lollipop” chart (with Matplotlib)
 - 🆗 **Friendly errors** — No internet? Bad location? Get helpful advice!
 
@@ -85,7 +85,7 @@ Enter your question, then city or PIN/ZIP
 
 ### 3️⃣ **Visualize**
 Choose:
-- Temperature: shaded min–max band
+- Temperature: 3D min max chart
 - Rain: lollipop chart (stem + dot + % label)
 - Both!
 

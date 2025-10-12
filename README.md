@@ -1,110 +1,177 @@
-WeatherWise — Simple CLI Weather App:
-An accurate,beginner-friendly weather app that answers natural-language questions (“Will it rain tomorrow in Perth?”), prints a 5-day forecast with emojis, and can visualize temperature and rain.
+# 🌈 WeatherWise — Simple CLI Weather App 🚀
 
-🌤 Overview:
-WeatherWise fetches data from Open-Meteo (no API key needed) and presents it in a clean user interface. 
-You can View a 5-day forecast for a city or PIN/ZIP.
-Ask questions like “Will it rain tomorrow in 6000?” or “How’s the weather today in Melbourne?”
-Visualise temperature ranges and rain chances.
-This project was built for my university assessment and refined with AI assistance to keep the code short, readable, and easy to explain.
+> **An accurate, beginner-friendly weather app for natural-language weather answers, 5-day emoji forecasts, and fun visualizations!**
 
-✨ Features:
-Natural language Q&A (rain-only, temperature-only, or general feel)
-5-day forecast with date formatting (DD Mon YYYY)
-Emojis for temperature: 🔥 hot (≥35 °C), 🙂 cool (15–34 °C), 🥶 cold (<15 °C)
-Rain note shown only when meaningful (≥30%)
-Charts: Temperature band + Rain “lollipop” chart (Matplotlib)
-Friendly errors for no internet / bad location
+---
 
-🧠 How It Works (short):
-Geocode your input (city or PIN/ZIP) to lat/lon using Open-Meteo’s geocoding API.
-Fetch forecast (current temp, daily min/max, rain chance) from Open-Meteo’s forecast API.
-Parse questions to detect intent (rain / temperature / general) and day (today/tomorrow/in N days).
-Respond with a concise sentence and optional visualisations.
-No API keys. All endpoints are free and public.
+## 🌟 Why WeatherWise?
+- **Ask anything!** — _“Will it rain tomorrow in Perth?”_  
+- **See the week at a glance!** — 5-day forecasts with ✨emojis✨  
+- **Visualize weather trends!** — Gorgeous temperature & rain charts  
+- **No API keys needed!** — Powered by [Open-Meteo](https://open-meteo.com/)  
+- **Made with ❤️ for beginners, students, and weather fans!**
 
-🔧 Quick Start:
-Option A — Google Colab
-Open the notebook and paste the provided cells (Data Fetching → NLP → UI helpers → Menu).
-Run all cells top to bottom.
-Use the console prompts to interact.
+---
 
-Option B — VS Code (recommended) but i have used Google Colab
+## 🖼️ Features at a Glance
 
-🖥 Usage:
-When you start the app you’ll see a simple menu:
-1) View Forecast  2) Ask a Question  3) Visualise  4) Exit
-1) View Forecast → enter a city or PIN/ZIP
-Prints 5 days with formatted dates, min–max temps, emoji, and “(rain XX%)” only if ≥30%.
-2) Ask a Question → enter your question, then city or PIN/ZIP
-Example questions:
-“Will it rain today in Perth?”
-“Is rain likely in 6000 tomorrow?”
-“Is it cold tomorrow in Melbourne?”
-“Temperature in Adelaide in 3 days?”
-“How is the weather today in Perth?”
-“Weather in Auckland in 4 days?”
-3) Visualise → choose Temperature, Rain, or Both
-Temperature: shaded min–max band with lines
-Rain: lollipop (stem + dot + % label)
+- 💬 **Natural Language Q&A** — Rain, temperature, “feel”, or general queries
+- 🗓️ **5-Day Forecast** — Dates in `DD Mon YYYY` format
+- 😎 **Weather Emojis**:  
+  - 🔥 Hot (≥35°C)  
+  - 🙂 Cool (15–34°C)  
+  - 🥶 Cold (<15°C)
+- 🌧️ **Rain alerts** — Only shown if meaningful (≥30%)
+- 📊 **Charts:**  
+  - Temperature band  
+  - Rain “lollipop” chart (with Matplotlib)
+- 🆗 **Friendly errors** — No internet? Bad location? Get helpful advice!
 
-📂 Project Structure:
+---
+
+## 🧠 How It Works
+
+1. **Geocode your input**  
+   City or PIN/ZIP → Latitude/Longitude (Open-Meteo geocoding API)
+2. **Fetch the forecast**  
+   - Current temp  
+   - Daily min/max  
+   - Rain chance  
+   (Open-Meteo forecast API)
+3. **Parse your question**  
+   - Detect intent (rain/temperature/general)  
+   - Day (today/tomorrow/in N days)
+4. **Respond smartly!**  
+   Concise answers + optional visualizations
+5. **No keys needed!**  
+   All endpoints are free & public
+
+---
+
+## ⚡ Quick Start
+
+### 🅰️ Option A — Google Colab
+
+- Open the notebook, paste the provided cells (Data Fetching → NLP → UI helpers → Menu).
+- Run all cells, top to bottom.
+- Use the console prompts to interact!
+
+### 🅱️ Option B — VS Code (recommended)  
+Or just use Google Colab like I did 😄
+
+---
+
+## 🖥️ Usage
+
+When you start the app, you’ll see a simple menu:
+
+```
+1) View Forecast   2) Ask a Question   3) Visualize   4) Exit
+```
+
+### 1️⃣ **View Forecast**  
+Enter a city or PIN/ZIP  
+→ Prints 5 days with formatted dates, min–max temps, emoji, and “(rain XX%)” if ≥30%.
+
+### 2️⃣ **Ask a Question**  
+Enter your question, then city or PIN/ZIP  
+#### Example Questions:
+- “Will it rain today in Perth?”
+- “Is rain likely in 6000 tomorrow?”
+- “Is it cold tomorrow in Melbourne?”
+- “Temperature in Adelaide in 3 days?”
+- “How is the weather today in Perth?”
+- “Weather in Auckland in 4 days?”
+
+### 3️⃣ **Visualize**
+Choose:
+- Temperature: shaded min–max band
+- Rain: lollipop chart (stem + dot + % label)
+- Both!
+
+---
+
+## 📦 Project Structure
+
+```
 weatherwise.py
 README.md
 requirements.txt   # optional
-Key functions:
-get_weather_data(place) — fetches & returns {location, current_temp, forecast[]}
-parse_weather_question(text) — extracts {location, day, attribute}
-generate_weather_response(text, get_weather_data) — rain-only or general reply
-viz_temp(res) / viz_rain(res) / viz_both(res) — charts
-run_app() — console menu
+```
+**Key Functions:**  
+- `get_weather_data(place)` — fetches `{location, current_temp, forecast[]}`
+- `parse_weather_question(text)` — extracts `{location, day, attribute}`
+- `generate_weather_response(text, get_weather_data)` — rain-only or general reply
+- `viz_temp(res)` / `viz_rain(res)` / `viz_both(res)` — charts
+- `run_app()` — console menu
 
-🪄 Design Choices (reflective):
-Open-Meteo: no API key, fast JSON, simple endpoints → perfect for an assignment and demos.
-Emojis & thresholds: tiny helpers (fmt_date, emoji_for_temp, RAIN_TH=30) keep code readable while improving UX.
-Intent-based replies: splitting rain vs temperature vs general makes answers feel smarter without heavy NLP.
-Minimal UI: single run_app() loop is easier to maintain and grade.
+---
 
-🧪 Quick Sanity Test:
+## ✨ Design Choices
+
+- **Open-Meteo:** No API key, fast JSON, simple endpoints — perfect for assignments & demos!
+- **Emojis & thresholds:** Tiny helpers (`fmt_date`, `emoji_for_temp`, `RAIN_TH=30`) = readable code + better UX.
+- **Intent-based replies:** Smarter answers, simple NLP!
+- **Minimal UI:** One `run_app()` loop — easy to maintain & grade.
+
+---
+
+## 🧪 Test It Yourself!
+
+```python
 res = get_weather_data("6000")
 print(res.get("location"), res.get("current_temp"))
 print(len(res.get("forecast", [])))
 print(generate_weather_response("Will it rain tomorrow in Perth?", get_weather_data))
-You should see a valid location name, a temperature, a forecast length 1–5, and a short sentence answer.
+```
+You should see:
+- ✅ Valid location name  
+- 🌡️ Temperature  
+- 📆 Forecast length (1–5)  
+- 💬 Short sentence answer
 
-🛠 Troubleshooting:
-“Module not found: requests/matplotlib”
-Activate your virtual environment and pip install requests matplotlib.
-No charts appear
-On some systems, Matplotlib opens a window outside the terminal. If needed, replace plt.show() with plt.savefig("chart.png").
-“No internet connection” / “Could not find 'X'”
-Check your network or try a simpler city name or a known PIN/ZIP.
+---
 
-⚠️ Limitations:
-Forecast is limited to 5 days and summarized to keep the UI simple.
-PIN/ZIP geocoding is best-effort via Open-Meteo; some codes may not resolve perfectly.
-NLP is keyword-based, not a full language model.
+## 🛠️ Troubleshooting
 
-🗺 Roadmap (if I continue):
-Unit tests for the parser and edge cases
-More use of language model
-Export charts to PNG automatically for reports
-Maybe trying it GUI based
+- **Module not found:** `requests`/`matplotlib`  
+  _Activate your environment &_ `pip install requests matplotlib`
+- **No charts appear:**  
+  _Matplotlib may open a window outside terminal; use_ `plt.savefig("chart.png")` _instead of_ `plt.show()`
+- **No internet / bad location:**  
+  _Check your network or use a simpler city / known PIN/ZIP._
 
-🙏 Acknowledgements:
-Open-Meteo for free weather & geocoding APIs
-Matplotlib for simple plotting
-ChatGPT for iterative code refinements, explanation help, and bug-fix guidance
-Google Colab for early prototyping
+---
 
-👋 Final Notes:
-This app was intentionally kept small and clear so a new reader can run it in minutes and understand the flow. If you have questions or suggestions, feel free to reach out.Good luck and have fun.
+## ⚠️ Limitations
 
+- 5-day summary for simplicity
+- PIN/ZIP geocoding is best-effort (some codes may not resolve perfectly)
+- Keyword-based NLP (not a full language model)
 
+---
 
+## 🗺️ Roadmap (if I continue)
 
+- ✅ Unit tests for the parser & edge cases
+- 🧠 More use of language models
+- 🖼️ Export charts to PNG for reports
+- 🖥️ Maybe a GUI version!
 
+---
 
+## 🙏 Thanks & Credits
 
+- **Open-Meteo** — Free weather & geocoding APIs
+- **Matplotlib** — Simple plotting
+- **ChatGPT** — Iterative code refinements, explanations, bug-fixes
+- **Google Colab** — Early prototyping
 
+---
 
+## 👋 Final Notes
+
+_Kept **small and clear** so a new reader can run it in minutes and understand the flow!_  
+**Questions or suggestions? Reach out! Good luck & have fun!** 🎉🌦️
+
+---

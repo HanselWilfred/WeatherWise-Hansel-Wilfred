@@ -1,4 +1,4 @@
-# 🌈 WeatherWise — Simple CLI Weather App 🚀
+# 🌧️ WeatherWise — Simple CLI Weather App 🚀
 
 > **An accurate, beginner-friendly weather app for natural-language weather answers, 5-day emoji forecasts, and fun visualizations!**
 
@@ -23,7 +23,7 @@
   - 🥶 Cold (<15°C)
 - 🌧️ **Rain alerts** — Only shown if meaningful (≥30%)
 - 📊 **Charts:**  
-  - Temperature 3D chart  
+  - Temperature line chart  
   - Rain “lollipop” chart (with Matplotlib)
 - 🆗 **Friendly errors** — No internet? Bad location? Get helpful advice!
 
@@ -85,7 +85,7 @@ Enter your question, then city or PIN/ZIP
 
 ### 3️⃣ **Visualize**
 Choose:
-- Temperature: 3D min max chart
+- Temperature:min max line chart
 - Rain: lollipop chart (stem + dot + % label)
 - Both!
 
@@ -119,10 +119,11 @@ requirements.txt   # optional
 ## 🧪 Test It Yourself!
 
 ```python
-res = get_weather_data("6000")
-print(res.get("location"), res.get("current_temp"))
-print(len(res.get("forecast", [])))
-print(generate_weather_response("Will it rain tomorrow in Perth?", get_weather_data))
+# example: natural language -> data -> answer
+text = "Will it rain in Perth tomorrow?"
+info = parse_weather_question(text)
+data = get_weather_data(info.get("location"), forecast_days=5)
+print(generate_weather_response(info, data))
 ```
 You should see:
 - ✅ Valid location name  

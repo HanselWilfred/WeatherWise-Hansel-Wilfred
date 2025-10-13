@@ -50,15 +50,11 @@
 
 ## ⚡ Quick Start
 
-### 🅰️ Option A — Google Colab
+###  Google Colab
 
 - Open the notebook, paste the provided cells (Data Fetching → NLP → UI helpers → Menu).
 - Run all cells, top to bottom.
 - Use the console prompts to interact!
-
-### 🅱️ Option B — VS Code (recommended)  
-Or just use Google Colab like I did 😄
-
 ---
 
 ## 🖥️ Usage
@@ -97,6 +93,7 @@ Choose:
 weatherwise.py
 README.md
 requirements.txt   # optional
+ai-conversations/  # AI conversation logs directory
 ```
 **Key Functions:**  
 - `get_weather_data(place)` — fetches `{location, current_temp, forecast[]}`
@@ -104,6 +101,13 @@ requirements.txt   # optional
 - `generate_weather_response(text, get_weather_data)` — rain-only or general reply
 - `viz_temp(res)` / `viz_rain(res)` / `viz_both(res)` — charts
 - `run_app()` — console menu
+
+---
+
+## 🧾 AI Conversation Logs
+
+All my AI prompting conversations and interactions are stored in the `ai-conversations/` directory.  
+If you're curious about how the AI helped shape WeatherWise, you can browse these logs for important transcripts of the development process, prompts, replies, and ideas.
 
 ---
 
@@ -147,8 +151,10 @@ You should see:
 ## ⚠️ Limitations
 
 - 5-day summary for simplicity
-- PIN/ZIP geocoding is best-effort (some codes may not resolve perfectly)
+- PIN/ZIP geocoding is best effort 
 - Keyword-based NLP (not a full language model)
+- It is not GUI based
+- Needs Internet to work on the code
 
 ---
 
@@ -158,6 +164,7 @@ You should see:
 - 🧠 More use of language models
 - 🖼️ Export charts to PNG for reports
 - 🖥️ Maybe a GUI version!
+- Use VS Code 
 
 ---
 
@@ -172,7 +179,7 @@ You should see:
 
 ## 👋 Final Notes
 
-_Kept **small and clear** so a new reader can run it in minutes and understand the flow!_  
+_Kept **concise and clear** so a new user can run it in minutes and understand the flow!_  
 **Questions or suggestions? Reach out! Good luck & have fun!** 🎉🌦️
 
 ---

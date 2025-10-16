@@ -171,9 +171,10 @@ You should see:
 ## 🙏 Thanks & Credits
 
 - **Open-Meteo** — Free weather & geocoding APIs
-- **Matplotlib** — Simple plotting
+- **Matplotlib** — Simple plotting visualisations
 - **ChatGPT** — Iterative code refinements, explanations, bug-fixes
-- **Google Colab** — Early prototyping
+- **Google Colab** — Project Implemented
+- **CoPilot** - Github Visualisations
 
 ---
 

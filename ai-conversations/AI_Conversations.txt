@@ -5,58 +5,296 @@ Tool: ChatGPT
 Date: 17/09/2025
 ----------------------------------
 
-Me: This is an upcoming assignment in python for me before going just explain to me what the assignment is about. I am a beginner, explain to me in simple terms and tell me how to start on this project.
+Conversation about WeatherWise assignment development
+------------------------------------------------------
+----------------------------------
+Tool: ChatGPT
+Date: 17/09/2025
+----------------------------------
 
-AI: (Explains that the project is about creating a weather app in Python that can: 
-- fetch weather data 
-- show forecasts in text 
-- make visualisations 
-- answer natural language questions 
-- and use menus for interaction. 
-Suggested starting with data retrieval first.)
+Me: This is an upcoming assignment in python for me. Before going just explain to me what the assignment is about. 
+I am a beginner, explain to me in simple terms and tell me how to start on this project.
+
+AI: It’s a small weather app in Python that can:
+    - fetch weather data from the internet,
+    - show a 5-day forecast in text,
+    - make simple visualisations,
+    - answer natural-language questions (e.g., “Will it rain tomorrow in Perth?”),
+    - and use a console menu for interaction.
+    Start with data retrieval first (clean dict output), then NLP, then visuals, then the menu.
 
 ---
 
 Me: ⚠️ Could not get weather data. Keys in data: dict_keys([])
 
-AI: That error means the fetch-my-weather package is not returning proper JSON, it’s just giving back strings. Let's switch to Open-Meteo API because it’s free, global, and simple to use.
+AI: That error means your package isn’t returning proper JSON. Let’s switch to the free **Open-Meteo** API (no API key).
+    Here’s a clean, beginner-friendly fetcher that returns exactly what your assignment needs.
+
+[Drop-in Code — Section 1: Data Fetching]
+-----------------------------------------
+# --- Section 1: Data (Open-Meteo) ---
+import requests, re
+
+def get_weather_data(location, forecast_days=5):
+    """
+    Return:
+      {
+        "location": str,
+        "current_temp": float|None,
+        "forecast": [
+          {"date": str, "max_temp": float|None, "min_temp": float|None, "rain_chance": float|None},
+          ...
+        ]
+      }
+    Or {"error": "..."} on failure.
+    """
+    # clamp 1..5
+    try:
+        days = max(1, min(5, int(forecast_days or 5)))
+    except Exception:
+        days = 5
+
+    # clean location
+    loc = re.sub(r"\b(tomorrow|today|day after|in\s+\d+\s+days)\b", "", str(location or ""), flags=re.I)
+    loc = re.sub(r"\s+", " ", loc).strip()
+    if not loc:
+        return {"error": "Please enter a city or PIN/ZIP."}
+
+    try:
+        # 1) Geocode
+        g = requests.get(
+            "https://geocoding-api.open-meteo.com/v1/search",
+            params={"name": loc, "count": 1, "language": "en"},
+            timeout=10
+        )
+        g.raise_for_status()
+        results = (g.json().get("results") or [])
+        if not results:
+            return {"error": f"Could not find '{loc}'. Try another place."}
+        lat, lon = results[0]["latitude"], results[0]["longitude"]
+        city = results[0].get("name") or loc
+
+        # 2) Forecast (with current)
+        f = requests.get(
+            "https://api.open-meteo.com/v1/forecast",
+            params={
+                "latitude": lat,
+                "longitude": lon,
+                "current_weather": True,
+                "daily": "temperature_2m_max,temperature_2m_min,precipitation_probability_max",
+                "timezone": "auto",
+            },
+            timeout=10
+        )
+        f.raise_for_status()
+        data = f.json()
+
+        daily = data.get("daily") or {}
+        times = daily.get("time") or []
+        if not times:
+            return {"error": "No forecast available right now."}
+
+        out = {
+            "location": city,
+            "current_temp": (data.get("current_weather") or {}).get("temperature"),
+            "forecast": []
+        }
+        for i in range(min(days, len(times))):
+            out["forecast"].append({
+                "date": times[i],
+                "max_temp": (daily.get("temperature_2m_max") or [None]*len(times))[i],
+                "min_temp": (daily.get("temperature_2m_min") or [None]*len(times))[i],
+                "rain_chance": (daily.get("precipitation_probability_max") or [None]*len(times))[i],
+            })
+        return out
+
+    except (requests.ConnectionError, requests.Timeout):
+        return {"error": "No internet connection. Please connect to Wi-Fi or mobile data."}
+    except requests.RequestException:
+        return {"error": "Something went wrong while fetching the weather."}
+
+---
 
 Me: Could not fetch weather: get_weather() got an unexpected keyword argument 'forecast_days'.
 
-AI: Yes, fetch-my-weather doesn’t support that. Open-Meteo allows geocoding (city → latitude/longitude), current weather, and daily forecast. Let's build a function around that instead.
+AI: That was your old package. The function above **does** accept `forecast_days` and clamps it to 1..5.
 
 ---
 
 Me: Before running this should I install something?
 
-AI: Yes, in Colab run:
+AI: Yes, in Colab:
+-----------------------------------------
 !pip install matplotlib pyinputplus
-This gives you graphing and menu options.
+-----------------------------------------
+(You can skip `pyinputplus` if you only use built-in `input()`.)
 
 Me: Where should I put the code in step 2?
 
-AI: Under the “Natural Language Processing” section. Replace the `pass` functions with the new ones.
+AI: In the **Natural Language Processing** section. Replace the `pass` stubs with these:
+
+[Drop-in Code — Section 2: NLP + Response]
+------------------------------------------
+# --- Section 2: NLP + Response ---
+import re
+from datetime import datetime
+from typing import Optional
+
+def format_date(d: str) -> str:
+    try:
+        return datetime.strptime(d, "%Y-%m-%d").strftime("%d %b %Y")
+    except Exception:
+        return d
+
+def _as_float(x):
+    try: return float(x)
+    except (TypeError, ValueError): return None
+
+def _clean_location(text: str) -> Optional[str]:
+    if not text: return None
+    text = re.sub(r"\b(tomorrow|today|day after tomorrow|day after|in\s+\d+\s+day[s]?)\b", "", text, flags=re.I)
+    text = re.sub(r"\s+", " ", text).strip()
+    return text.title() if text else None
+
+def parse_weather_question(q: str):
+    q = (q or "").lower().strip()
+    # day
+    if "day after tomorrow" in q or "day after" in q: day = 2
+    elif "tomorrow" in q: day = 1
+    else: day = 0
+    m = re.search(r"\bin\s+(\d+)\s+day(s)?\b", q)
+    if m:
+        try: day = max(0, min(4, int(m.group(1))))
+        except: pass
+    # attribute
+    if any(w in q for w in ["rain","rainy","umbrella","drizzle","shower","showers"]):
+        attr = "rain"
+    elif any(w in q for w in ["temp","temperature","hot","cold","warm","cool","chill"]):
+        attr = "temperature"
+    else:
+        attr = "general"
+    # location (PIN/ZIP first)
+    pin = re.search(r"\b\d{3,6}\b", q)
+    if pin: return {"location": pin.group(0), "day": day, "attribute": attr}
+    # or "in <place>"
+    m = re.search(
+        r"\bin\s+([a-z0-9\s\-]+?)(?=(?:\?|\.|,|$|\s+tomorrow|\s+today|\s+day after(?:\s+tomorrow)?|\s+in\s+\d+\s+day[s]?))",
+        q
+    )
+    loc = _clean_location(m.group(1)) if m else None
+    return {"location": loc, "day": day, "attribute": attr}
+
+def generate_weather_response(user_question: str, fetch_fn):
+    info = parse_weather_question(user_question)
+    place, day, attr = info["location"], info["day"], info["attribute"]
+    if not place:
+        return "Please tell me a city or PIN/ZIP (e.g., 'weather in Perth')."
+    data = fetch_fn(place)
+    if not data or "error" in data:
+        return data.get("error", "Sorry, I couldn't get the weather right now.")
+    fc = data.get("forecast") or []
+    if not fc: return "No forecast available right now."
+
+    i = min(day, len(fc)-1)
+    row = fc[i]
+    city = data.get("location", place)
+    date = format_date(row.get("date",""))
+    mx, mn = row.get("max_temp"), row.get("min_temp")
+    rc = _as_float(row.get("rain_chance"))
+    t = mx if mx is not None else mn
+
+    def temp_phrase(x):
+        if x is None: return "temperature unavailable"
+        return "hot and sunny" if x >= 35 else ("cool and pleasant" if x >= 15 else "cold")
+
+    def rain_only(v):
+        if v is None: return "No rain info."
+        return ("Yes, likely — rain %d%%." % int(v)) if v >= 50 else \
+               ("Possible — rain %d%%." % int(v)) if v >= 20 else \
+               ("Unlikely — rain %d%%." % int(v))
+
+    if attr == "rain":
+        return f"In {city} on {date}: {rain_only(rc)}"
+
+    msg = f"In {city} on {date}: {temp_phrase(t)}"
+    if t is not None: msg += f" (around {round(t)}°C)"
+    if rc is not None and rc >= 30: msg += f", rain {int(rc)}%."
+    else: msg += "."
+    return msg
 
 ---
 
 Me: ⚠️ Could not fetch weather: 'str' object has no attribute 'current_condition'
 
-AI: That’s because fetch-my-weather failed. Let’s write a new `get_weather_data()` function with Open-Meteo:
-1. Search the city or PIN code with geocoding API.
-2. Get weather forecast for that location.
-3. Return current temp + 5-day forecast neatly in a dictionary.
+AI: That was the old library. With `get_weather_data(...)` above, you’ll get a clean dict, e.g.:
 
-Me: Can this be simplified?
-
-AI: Yes. Use a list comprehension for the forecast. Now it fetches the city, current temperature, and 5 days in a clean dictionary.
+Example output shape
+--------------------
+{
+  "location": "Perth",
+  "current_temp": 16.4,
+  "forecast": [
+    {"date":"2025-10-05","max_temp":17.0,"min_temp":13.9,"rain_chance":42},
+    ...
+  ]
+}
 
 ---
 
 Me: I want to see the visuals.
 
-AI: Run:
-create_temperature_visualisation(weather)
-create_precipitation_visualisation(weather)
+AI: Add these minimal visualisations (Matplotlib). Paste under your “Visualisation” section.
+
+[Drop-in Code — Section 4: Visualisations]
+------------------------------------------
+# --- Section 4: Visualisations ---
+import matplotlib.pyplot as plt
+
+def create_temperature_visualisation(result: dict):
+    """Shaded min–max band + lines."""
+    if not result or "error" in result or not result.get("forecast"):
+        print("No data to visualise."); return
+    fc = result["forecast"]
+    xs = list(range(len(fc)))
+    dates = [format_date(r.get("date","")) for r in fc]
+    tmin  = [r.get("min_temp") for r in fc]
+    tmax  = [r.get("max_temp") for r in fc]
+    plt.figure(figsize=(8,4.5))
+    plt.fill_between(xs, tmin, tmax, alpha=0.25, label="Daily range")
+    plt.plot(xs, tmax, marker="o", label="Max (°C)")
+    plt.plot(xs, tmin, marker="o", label="Min (°C)")
+    plt.title(f"Temperature (Min–Max) — {result.get('location','Location')}")
+    plt.xlabel("Day"); plt.ylabel("°C"); plt.xticks(xs, dates)
+    plt.grid(True, linestyle="--", alpha=0.5); plt.legend(); plt.tight_layout(); plt.show()
+
+def create_precipitation_visualisation(result: dict):
+    """Rain chance lollipop chart."""
+    if not result or "error" in result or not result.get("forecast"):
+        print("No data to visualise."); return
+    fc = result["forecast"]
+    xs = list(range(len(fc)))
+    dates = [format_date(r.get("date","")) for r in fc]
+    rainp = []
+    for r in fc:
+        v = r.get("rain_chance")
+        try: v = float(v)
+        except (TypeError, ValueError): v = 0.0
+        rainp.append(max(0.0, min(100.0, v)))
+    plt.figure(figsize=(8,4.5))
+    for x, v in zip(xs, rainp):
+        plt.vlines(x, 0, v, linewidth=2)
+        plt.scatter(x, v, s=60, zorder=3)
+        plt.text(x, v + 2, f"{int(v)}%", ha="center", fontsize=8)
+    plt.title(f"Rain Chance — {result.get('location','Location')}")
+    plt.xlabel("Day"); plt.ylabel("Rain Chance (%)"); plt.xticks(xs, dates)
+    plt.ylim(0, 100); plt.grid(axis="y", linestyle="--", alpha=0.5); plt.tight_layout(); plt.show()
+
+(Usage)
+-------
+w = get_weather_data("Perth")
+
+AI: create_temperature_visualisation(w)
+    create_precipitation_visualisation(w)
 
 This shows a line chart (min/max temp) and a bar chart (rain chance).
 
